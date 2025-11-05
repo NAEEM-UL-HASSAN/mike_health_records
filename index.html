@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mike's Health Records</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      background: url("https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1950&q=80")
+        no-repeat center center/cover;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      transition: 0.3s;
+    }
+
+    .nav-links button:hover,
+    .nav-links button.active {
+      background: #00bfff;
+      border-radius: 8px;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 2000; /* stays above dropdown */
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      margin: 4px 0;
+      transition: 0.4s;
+    }
+
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(10px, -10px);
+    }
+
+    /* Section Container */
+    .section {
+      display: none;
+      padding: 40px 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+      margin: 40px auto;
+      max-width: 900px;
+      border-radius: 15px;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    td {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Responsive Navbar */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: 53px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        text-align: center;
+        border-radius: 0 0 10px 10px;
+        display: none;
+        z-index: 1000;
+      }
+
+      .nav-links.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .nav-links button {
+        margin: 0px 0;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-title">Health Records</div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <button class="active" onclick="showSection('infoSection', this)">Mike's Info</button>
+      <button onclick="showSection('dewormingSection', this)">Deworming Records</button>
+      <button onclick="showSection('vaccineSection', this)">Vaccination Records</button>
+    </div>
+  </nav>
+
+  <!-- MIKE’S INFO SECTION -->
+  <div id="infoSection" class="section active">
+    <h1>Mike’s Information</h1>
+    <table>
+      <tr><th>Name</th><td>Mike</td></tr>
+      <tr><th>Species</th><td>Feline</td></tr>
+      <tr><th>Breed</th><td>Persian</td></tr>
+      <tr><th>Gender</th><td>Male</td></tr>
+      <tr><th>Coat Color</th><td>Fawn</td></tr>
+      <tr><th>Date of Birth</th><td id="dob-display"></td></tr>
+      <tr><th>Current Age</th><td id="age"></td></tr>
+      <tr><th>Total Days</th><td id="total-days"></td></tr>
+    </table>
+  </div>
+
+  <!-- DEWORMING SECTION -->
+  <div id="dewormingSection" class="section">
+    <h1>Deworming Records</h1>
+    <table id="dewormingTable"></table>
+  </div>
+
+  <!-- VACCINATION SECTION -->
+  <div id="vaccineSection" class="section">
+    <h1>Vaccination Records</h1>
+    <table id="vaccineTable"></table>
+  </div>
+
+  <script>
+    // --- Hardcoded DOB ---
+    const dob = new Date(2025, 6, 24); // 24 July 2025
+
+    // --- Deworming & Vaccination Data Arrays ---
+    const dewormingData = [
+      { medicine: "Syp. Fenzole", administered: "15-Sep-2025", validUpto: "03-Oct-2025" },
+      { medicine: "Syp. Fenzole", administered: "03-Oct-2025", validUpto: "19-Oct-2025" },
+      { medicine: "Syp. Fenzole", administered: "19-Oct-2025", validUpto: "19-Nov-2025" },
+    ];
+
+    const vaccinationData = [
+      { vaccine: "Biofel PCH", administered: "11-Oct-2025", validUpto: "30-Oct-2025" },
+      { vaccine: "Biocan Rabies", administered: "30-Oct-2025", validUpto: "19-Nov-2025"},
+      { vaccine: "Biofel PCH", administered: "30-Oct-2025", validUpto: "30-Oct-2026" },
+    ];
+
+    // --- Age Calculation ---
+    function calculateAge(dob) {
+      const today = new Date();
+      let years = today.getFullYear() - dob.getFullYear();
+      let months = today.getMonth() - dob.getMonth();
+      let days = today.getDate() - dob.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      return { years, months, days };
+    }
+
+    function calculateTotalDaysUTC(dob) {
+      const today = new Date();
+      const dobUTC = Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate());
+      const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+      const diffDays = (todayUTC - dobUTC) / (1000 * 60 * 60 * 24);
+      return Math.trunc(diffDays);
+    }
+
+    function displayAge() {
+      const { years, months, days } = calculateAge(dob);
+      const totalDays = calculateTotalDaysUTC(dob);
+
+      document.getElementById("dob-display").textContent = dob.toDateString();
+      document.getElementById("age").textContent = `${years} years, ${months} months, ${days} days`;
+      document.getElementById("total-days").textContent = `${totalDays.toLocaleString()} days`;
+    }
+
+    // --- Table Generators ---
+    function generateDewormingTable() {
+      const table = document.getElementById("dewormingTable");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Sr. No</th>
+            <th>Medicine Name</th>
+            <th>Administered</th>
+            <th>Valid Upto</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${dewormingData
+            .map(
+              (item, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${item.medicine}</td>
+                <td>${item.administered}</td>
+                <td>${item.validUpto}</td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>`;
+    }
+
+    function generateVaccineTable() {
+      const table = document.getElementById("vaccineTable");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Sr. No</th>
+            <th>Vaccine Name</th>
+            <th>Administered</th>
+            <th>Valid Upto</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${vaccinationData
+            .map(
+              (item, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${item.vaccine}</td>
+                <td>${item.administered}</td>
+                <td>${item.validUpto}</td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>`;
+    }
+
+    // --- Navbar Logic ---
+    function showSection(sectionId, button) {
+      document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".nav-links button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+      button.classList.add("active");
+
+      // Hide menu after click on mobile
+      document.getElementById("navLinks").classList.remove("show");
+      document.getElementById("hamburger").classList.remove("active");
+    }
+
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+      document.getElementById("hamburger").classList.toggle("active");
+    }
+
+    // --- Initialize ---
+    displayAge();
+    generateDewormingTable();
+    generateVaccineTable();
+  </script>
+</body>
+</html>
