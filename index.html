@@ -19,7 +19,6 @@
       min-height: 100dvh;
     }
 
-    /* Navbar */
     nav {
       background: rgba(0, 0, 0, 0.85);
       display: flex;
@@ -57,14 +56,12 @@
       border-radius: 8px;
     }
 
-    /* Hamburger Menu */
     .hamburger {
       display: none;
       flex-direction: column;
       cursor: pointer;
       transition: transform 0.3s ease;
-      z-index: 2000; /* stays above dropdown */
-    }
+      z-index: 2000;
 
     .hamburger div {
       width: 25px;
@@ -86,7 +83,6 @@
       transform: rotate(-45deg) translate(10px, -10px);
     }
 
-    /* Section Container */
     .section {
       display: none;
       padding: 40px 20px;
@@ -106,7 +102,6 @@
       font-size: 1.8rem;
     }
 
-    /* Table Styles */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -135,7 +130,6 @@
       border-bottom: none;
     }
 
-    /* Responsive Navbar */
     @media (max-width: 768px) {
       .hamburger {
         display: flex;
@@ -192,7 +186,6 @@
     </div>
   </nav>
 
-  <!-- MIKE’S INFO SECTION -->
   <div id="infoSection" class="section active">
     <h1>Mike’s Information</h1>
     <table>
@@ -207,23 +200,19 @@
     </table>
   </div>
 
-  <!-- DEWORMING SECTION -->
   <div id="dewormingSection" class="section">
     <h1>Deworming Records</h1>
     <table id="dewormingTable"></table>
   </div>
 
-  <!-- VACCINATION SECTION -->
   <div id="vaccineSection" class="section">
     <h1>Vaccination Records</h1>
     <table id="vaccineTable"></table>
   </div>
 
   <script>
-    // --- Hardcoded DOB ---
-    const dob = new Date(2025, 8, 6); // 24 July 2025
+    const dob = new Date(2025, 6, 23); // 23 July 2025
 
-    // --- Deworming & Vaccination Data Arrays ---
     const dewormingData = [
       { medicine: "Syp. Fenzole", administered: "15-Sep-2025", validUpto: "03-Oct-2025" },
       { medicine: "Syp. Fenzole", administered: "03-Oct-2025", validUpto: "19-Oct-2025" },
@@ -236,7 +225,6 @@
       { vaccine: "Biofel PCH", administered: "30-Oct-2025", validUpto: "30-Oct-2026" },
     ];
 
-    // --- Age Calculation ---
     function calculateAge(dob) {
       const today = new Date();
       let years = today.getFullYear() - dob.getFullYear();
@@ -274,7 +262,6 @@
       document.getElementById("total-days").textContent = `${totalDays.toLocaleString()} days`;
     }
 
-    // --- Table Generators ---
     function generateDewormingTable() {
       const table = document.getElementById("dewormingTable");
       table.innerHTML = `
@@ -327,14 +314,12 @@
         </tbody>`;
     }
 
-    // --- Navbar Logic ---
     function showSection(sectionId, button) {
       document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
       document.querySelectorAll(".nav-links button").forEach(btn => btn.classList.remove("active"));
       document.getElementById(sectionId).classList.add("active");
       button.classList.add("active");
 
-      // Hide menu after click on mobile
       document.getElementById("navLinks").classList.remove("show");
       document.getElementById("hamburger").classList.remove("active");
     }
@@ -344,12 +329,12 @@
       document.getElementById("hamburger").classList.toggle("active");
     }
 
-    // --- Initialize ---
     displayAge();
     generateDewormingTable();
     generateVaccineTable();
   </script>
 </body>
 </html>
+
 
 
